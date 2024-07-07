@@ -68,9 +68,9 @@ export class UserRepository {
   }
 
   public static async updateUser(user_id: number, userData: User): Promise<User | null> {
-    const query = 'UPDATE users SET name = ?, rol_id = ?, password = ?, update_at = ?, update_by = ?, deleted = ? WHERE employee_id = ?';
+    const query = 'UPDATE users SET name = ?, rol_id = ?, password = ?, age = ?, email = ?, gender = ?, update_at = ?, update_by = ?, deleted = ? WHERE user_id = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [userData.name, userData.rol_id, userData.password, userData.update_at, userData.update_by, userData.deleted, user_id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [userData.name, userData.rol_id, userData.password, userData.age, userData.email, userData.gender, userData.update_at, userData.update_by, userData.deleted, user_id], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {

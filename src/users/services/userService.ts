@@ -46,7 +46,7 @@ export class userService {
         try{
             return await UserRepository.findAllUser();
         }catch (error: any){
-            throw new Error(`Error al obtener empleados: ${error.message}`);
+            throw new Error(`Error al obtener los usuarios: ${error.message}`);
         }
     }
 
@@ -54,7 +54,7 @@ export class userService {
         try{
             return await UserRepository.findByUserId(userId);
         }catch (error: any){
-            throw new Error(`Error al encontrar empleado: ${error.message}`);
+            throw new Error(`Error al encontrar el usuario: ${error.message}`);
         }
     }
 
@@ -62,7 +62,7 @@ export class userService {
         try{
             return await UserRepository.findByUserName(name);
         }catch (error: any){
-            throw new Error(`Error al encontrar empleado: ${error.message}`);
+            throw new Error(`Error al encontrar el usuario: ${error.message}`);
         }
     }
 
@@ -74,7 +74,7 @@ export class userService {
             user.password = await bcrypt.hash(user.password, salt);
             return await UserRepository.createUser(user);
         } catch (error: any) {
-            throw new Error(`Error al crear empleado: ${error.message}`);
+            throw new Error(`Error al crear el usuario: ${error.message}`);
         }
     }
 
@@ -93,6 +93,9 @@ export class userService {
                 if(userData.rol_id){
                     userFinded.rol_id = userData.rol_id;
                 }
+                if (userData.email) {
+                    userFinded.email = userData.email;
+                }
                 if (userData.age) {
                     userFinded.age = userData.age;
                 }
@@ -109,7 +112,7 @@ export class userService {
             userFinded.update_at = DateUtils.formatDate(new Date());
             return await UserRepository.updateUser(userId,userFinded);
         }catch (error: any){
-            throw new Error(`Error al modificar empleado: ${error.message}`);
+            throw new Error(`Error al modificar eel usuario: ${error.message}`);
         }
     }
 
@@ -117,7 +120,7 @@ export class userService {
         try{
             return await UserRepository.deleteUser(userId);
         }catch (error: any){
-            throw new Error(`Error al eliminar empleado: ${error.message}`);
+            throw new Error(`Error al eliminar el usuario: ${error.message}`);
         }
     }
 

@@ -4,6 +4,10 @@ import * as dotenv from 'dotenv';
 
 // Importar rutas de módulos
 import userRoutes from './users/routes/UserRoutes';
+import rolsRoutes from './rols/routes/RolRoutes';
+import ProductRoutes from './product/routes/ProductRoutes';
+import orderRoutes from './order/routes/OrderRoutes';
+import CategoryRoutes from './category/routes/categoryRoutes';
 
 // Importar middlewares compartidos
 import { errorHandler } from './shared/middlewares/errorHandler';
@@ -22,6 +26,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rutas de los módulos
 app.use('/api/user', userRoutes);
+app.use('/api/rol', rolsRoutes);
+app.use('/api/product', ProductRoutes);
+app.use('/api/order', orderRoutes);
+app.use('/api/category', CategoryRoutes);
 
 // Middleware para manejar rutas no encontradas
 app.use(notFoundHandler);

@@ -7,9 +7,9 @@ const userRoutes: Router = Router();
 userRoutes.post('/login', loginUser);
 
 userRoutes.get('/', authMiddleware, getUsers);
-userRoutes.get('/:employee_id', authMiddleware,getUserById);
+userRoutes.get('/:user_id', authMiddleware,getUserById);
 userRoutes.post('/', authMiddleware, createUser);
-userRoutes.put('/:employee_id', authMiddleware, updateUser);
-userRoutes.delete('/:employee_id',authMiddleware, deleteUser);
+userRoutes.put('/:user_id', authMiddleware, updateUser);
+userRoutes.delete('/:user_id',authMiddleware, deleteUser);
 
 export default userRoutes;
