@@ -74,7 +74,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const deleted = await userService.deleteEmployee(parseInt(req.params.user_id, 10));
     if(deleted){
-      res.status(201).json({ message: 'Se eliminó el empleado.' });
+      res.status(201).json({ message: 'Se eliminó el usuario.' });
     }else{
       res.status(404).json({ message: 'Algo salio mal' });
     }
