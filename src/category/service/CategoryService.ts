@@ -49,9 +49,6 @@ export class CategoryService {
                 if(categoryData.name){
                     categoryFinded.name = categoryData.name;
                 }
-                if(categoryData.description){
-                    categoryFinded.description = categoryData.description;
-                }
                 if(categoryData.deleted){
                     categoryFinded.deleted = categoryData.deleted;
                 }

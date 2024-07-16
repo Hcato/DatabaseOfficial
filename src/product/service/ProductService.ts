@@ -46,6 +46,15 @@ export class ProductService {
             const productFinded =  await ProductRepository.findByProductId(productId);
 
             if(productFinded){
+                if (productData.category_id_fk) {
+                    productFinded.category_id_fk = productData.category_id_fk;
+                }
+                if (productData.color_id_fk) {
+                    productFinded.color_id_fk = productData.color_id_fk;
+                }
+                if (productData.size_id_fk) {
+                    productFinded.size_id_fk = productData.size_id_fk;
+                }
                 if(productData.name){
                     productFinded.name = productData.name;
                 }
@@ -55,8 +64,8 @@ export class ProductService {
                 if(productData.price){
                     productFinded.price = productData.price;
                 }
-                if (productData.stock) {
-                    productFinded.stock = productData.stock;
+                if (productData.total_amount) {
+                    productFinded.total_amount = productData.total_amount;
                 }
             }else{
                 return null;

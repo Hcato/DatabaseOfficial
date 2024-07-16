@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { userService } from '../services/userService';
 
 export const loginUser= async (req: Request, res: Response) => {
-  const { name, password } = req.body;
+  const { first_name, password } = req.body;
   try {
-    const token = await userService.login(name, password);
+    const token = await userService.login(first_name, password);
 
     if (!token) {
       res.status(401).json({ message: 'Invalid full name or password' });

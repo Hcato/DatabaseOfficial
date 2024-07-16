@@ -6,7 +6,7 @@ export class CategoryRepository {
 
   public static async findAllCategories(): Promise<Category[]> {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT category_id, name, description FROM category', (error: any, results) => {
+      connection.query('SELECT category_id, name FROM category', (error: any, results) => {
         if (error) {
           reject(error);
         } else {
@@ -52,10 +52,10 @@ export class CategoryRepository {
   }
 
   public static async createCategory(category: Category): Promise<Category> {
-    const query = 'INSERT INTO category (name, description, created_at, created_by, update_at, update_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO category (name, created_at, created_by, update_at, update_by, deleted) VALUES (?, ?, ?, ?, ?, ?)';
     console.log(category);
     return new Promise((resolve, reject) => {
-      connection.execute(query, [category.name, category.description, category.created_at, category.created_by, category.update_at, category.update_by, category.deleted], (error, result: ResultSetHeader) => {
+      connection.execute(query, [category.name,category.created_at, category.created_by, category.update_at, category.update_by, category.deleted], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {
@@ -68,9 +68,9 @@ export class CategoryRepository {
   }
 
   public static async updateUser(category_id: number, categoryData: Category): Promise<Category | null> {
-    const query = 'UPDATE category SET name = ?, description = ?, update_at = ?, update_by = ?, deleted = ? WHERE category_id = ?';
+    const query = 'UPDATE category SET name = ?, update_at = ?, update_by = ?, deleted = ? WHERE category_id = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [categoryData.name, categoryData.description, categoryData.update_at, categoryData.update_by, categoryData.deleted, category_id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [categoryData.name, categoryData.update_at, categoryData.update_by, categoryData.deleted, category_id], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {

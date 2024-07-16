@@ -29,10 +29,9 @@ export class userService {
             const payload = {
                 user_id: user.user_id,
                 rol_id: user.rol_id,
-                name: user.name,
+                firstname: user.first_name,
+                lastname : user.last_name,
                 email: user.email,
-                age: user.age,
-                gender: user.gender
             }
             return await jwt.sign(payload, secretKey, { expiresIn: '500m' });
 
@@ -84,23 +83,20 @@ export class userService {
             const salt = await bcrypt.genSalt(saltRounds);
 
             if(userFinded){
-                if(userData.name){
-                    userFinded.name = userData.name;
-                }
-                if(userData.password){
-                    userFinded.password = await bcrypt.hash(userData.password, salt);
-                }
                 if(userData.rol_id){
                     userFinded.rol_id = userData.rol_id;
+                }
+                if(userData.first_name){
+                    userFinded.first_name = userData.first_name;
+                }
+                if (userData.last_name) {
+                    userFinded.last_name = userData.last_name;
                 }
                 if (userData.email) {
                     userFinded.email = userData.email;
                 }
-                if (userData.age) {
-                    userFinded.age = userData.age;
-                }
-                if (userData.gender) {
-                    userFinded.gender = userData.gender;
+                if(userData.password){
+                    userFinded.password = await bcrypt.hash(userData.password, salt);
                 }
                 if(userData.deleted){
                     userFinded.deleted = userData.deleted;

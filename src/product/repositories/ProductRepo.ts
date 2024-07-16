@@ -6,7 +6,7 @@ export class ProductRepository {
 
   public static async findAllProduct(): Promise<Product[]> {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT product_id, category_id, name, description, price, stock FROM product', (error: any, results) => {
+      connection.query('SELECT product_id, category_id_fk, color_id_fk, size_id_fk, name, description, price, total_amount FROM product', (error: any, results) => {
         if (error) {
           reject(error);
         } else {
@@ -52,10 +52,10 @@ export class ProductRepository {
   }
 
   public static async createProduct(product: Product): Promise<Product> {
-    const query = 'INSERT INTO product (name, description, price, stock, created_at, created_by, update_at, update_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO product (category_id_fk, color_id_fk, size_id_fk, name, description, price, total_amount, created_at, created_by, update_at, update_by, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     console.log(product);
     return new Promise((resolve, reject) => {
-      connection.execute(query, [product.name, product.description, product.price, product.stock, product.created_at, product.created_by, product.update_at, product.update_by, product.deleted], (error, result: ResultSetHeader) => {
+      connection.execute(query, [product.category_id_fk, product.color_id_fk, product.size_id_fk, product.name, product.description, product.price, product.total_amount, product.created_at, product.created_by, product.update_at, product.update_by, product.deleted], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {
@@ -68,9 +68,9 @@ export class ProductRepository {
   }
 
   public static async updateProduct(product_id: number, productData: Product): Promise<Product | null> {
-    const query = 'UPDATE product SET name = ?, description = ?, price = ?, stock= ? , update_at = ?, update_by = ?, deleted = ? WHERE product_id = ?';
+    const query = 'UPDATE product SET category_id_fk = ?, color_id_fk = ?, size_id_fk = ?, name = ?, description = ?, price = ?, total_amount = ? , update_at = ?, update_by = ?, deleted = ? WHERE product_id = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [productData.name, productData.description, productData.price, productData.stock, productData.update_at ,productData.update_by, productData.deleted, product_id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [productData.category_id_fk, productData.color_id_fk, productData.size_id_fk, productData.name, productData.description, productData.price, productData.total_amount, productData.update_at ,productData.update_by, productData.deleted, product_id], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {

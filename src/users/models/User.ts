@@ -1,11 +1,10 @@
 export interface User{
     user_id: number;
     rol_id: number;
-    name: string;
-    password: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    age: number;
-    gender: string;
+    password: string;
     deleted: boolean;
     created_at: String;
     created_by: string;
