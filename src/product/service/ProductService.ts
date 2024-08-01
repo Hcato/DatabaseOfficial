@@ -23,6 +23,15 @@ export class ProductService {
         }
     }
 
+    public static async getProductBycategory(categoryId: number): Promise<Product[]> {
+        try {
+          return await ProductRepository.findProductsByCategory(categoryId);
+        } catch (error: any) {
+          throw new Error(`Error al encontrar los productos: ${error.message}`);
+        }
+      }
+      
+    
     public static async getProductByName(name: string): Promise<Product | null> {
         try{
             return await ProductRepository.findByProductName(name);
@@ -31,52 +40,58 @@ export class ProductService {
         }
     }
 
-    public static async addProduct(product: Product) {
+    public static async addProduct(productData: any): Promise<any> {
         try {
-            product.created_at = DateUtils.formatDate(new Date());
-            product.update_at = DateUtils.formatDate(new Date());
-            return await ProductRepository.createProduct(product);
+          productData.created_at = DateUtils.formatDate(new Date());
+          productData.update_at = DateUtils.formatDate(new Date());
+      
+          return await ProductRepository.createProduct(productData);
         } catch (error: any) {
-            throw new Error(`Error al crear el producto: ${error.message}`);
+          throw new Error(`Error al crear el producto: ${error.message}`);
         }
-    }
+      }
+      
 
-    public static async modifyProduct(productId: number, productData: Product){
-        try{
-            const productFinded =  await ProductRepository.findByProductId(productId);
-
-            if(productFinded){
-                if (productData.category_id_fk) {
-                    productFinded.category_id_fk = productData.category_id_fk;
-                }
-                if (productData.color_id_fk) {
-                    productFinded.color_id_fk = productData.color_id_fk;
-                }
-                if (productData.size_id_fk) {
-                    productFinded.size_id_fk = productData.size_id_fk;
-                }
-                if(productData.name){
-                    productFinded.name = productData.name;
-                }
-                if(productData.description){
-                    productFinded.description= productData.description;
-                }
-                if(productData.price){
-                    productFinded.price = productData.price;
-                }
-                if (productData.total_amount) {
-                    productFinded.total_amount = productData.total_amount;
-                }
-            }else{
-                return null;
+      public static async modifyProduct(productId: number, productData: Product): Promise<Product | null> {
+        try {
+          const productFinded = await ProductRepository.findByProductId(productId);
+    
+          if (productFinded) {
+            if (productData.category_id_fk) {
+              productFinded.category_id_fk = productData.category_id_fk;
             }
-            productFinded.update_by = productData.update_by
+            if (productData.color_id_fk) {
+              productFinded.color_id_fk = productData.color_id_fk;
+            }
+            if (productData.size_id_fk) {
+              productFinded.size_id_fk = productData.size_id_fk;
+            }
+            if (productData.name) {
+              productFinded.name = productData.name;
+            }
+            if (productData.description) {
+              productFinded.description = productData.description;
+            }
+            if (productData.price) {
+              productFinded.price = productData.price;
+            }
+            if (productData.total_amount) {
+              productFinded.total_amount = productData.total_amount;
+            }
+            if (productData.url) {
+              productFinded.url = productData.url;
+            }
+            productFinded.update_by = productData.update_by;
             productFinded.update_at = DateUtils.formatDate(new Date());
+    
             return await ProductRepository.updateProduct(productId, productFinded);
-        }catch (error: any){
-            throw new Error(`Error al modificar el producto: ${error.message}`);
+          } else {
+            return null;
+          }
+        } catch (error: any) {
+          throw new Error(`Error al modificar el producto: ${error.message}`);
         }
-    }
+      }
 
     public static async deleteProduct(productId: number): Promise<boolean> {
         try{

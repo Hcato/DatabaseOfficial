@@ -57,13 +57,13 @@ export class userService {
         }
     }
 
-    public static async getUserByName(name: string): Promise<User | null> {
-        try{
-            return await UserRepository.findByUserName(name);
-        }catch (error: any){
-            throw new Error(`Error al encontrar el usuario: ${error.message}`);
+    public static async getUserByName(first_name: string): Promise<User | null> {
+        try {
+          return await UserRepository.findByUserName(first_name);
+        } catch (error: any) {
+          throw new Error(`Error al encontrar el usuario: ${error.message}`);
         }
-    }
+      }
 
     public static async addUser(user: User) {
         try {

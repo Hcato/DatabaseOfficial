@@ -27,12 +27,42 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-export const createProduct = async (req: Request, res: Response) => {
+export const getProductBycategory = async (req: Request, res: Response) => {
   try {
-    const newRol = await ProductService.addProduct(req.body);
-    if(newRol){
-      res.status(201).json(newRol);
-    }else{
+    const products = await ProductService.getProductBycategory(parseInt(req.params.category_id_fk, 10));
+    if(products && products.length > 0){
+      res.status(200).json(products);
+    } else {
+      res.status(404).json({ message: 'No se encontraron productos para la categoría especificada' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+export const createProduct = async (req: Request, res: Response) => { //crear productos con imagenes
+  try {
+    let imageUrl: string | undefined;
+    
+    if (req.body.imageUrl) {
+      // Caso de imagen externa
+      imageUrl = req.body.imageUrl;
+    } else if (req.file) {
+      // Caso de imagen cargada
+      const urlProject = process.env.URL;
+      const portProject = process.env.PORT;
+      imageUrl = `${urlProject}:${portProject}/uploads/${req.file.filename}`;
+    } else {
+      return res.status(400).send('No image provided.');
+    }
+    
+    const productData = { ...req.body, url: imageUrl, created_at: new Date(), update_at: new Date() };
+    const newProduct = await ProductService.addProduct(productData);
+    
+    if (newProduct) {
+      res.status(201).json(newProduct);
+    } else {
       res.status(404).json({ message: 'Algo salio mal' });
     }
   } catch (error: any) {
@@ -40,18 +70,34 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
+
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const updatedRol = await ProductService.modifyProduct(parseInt(req.params.product_id, 10), req.body);
-    if(updatedRol){
-      res.status(201).json(updatedRol);
-    }else{
-      res.status(404).json({ message: 'Algo salio mal' });
+    let imageUrl: string | undefined;
+
+    if (req.body.imageUrl) {
+      // Caso de imagen externa
+      imageUrl = req.body.imageUrl;
+    } else if (req.file) {
+      // Caso de imagen cargada
+      const urlProject = process.env.URL;
+      const portProject = process.env.PORT;
+      imageUrl = `${urlProject}:${portProject}/uploads/${req.file.filename}`;
+    }
+
+    const productData = { ...req.body, url: imageUrl, update_at: new Date() };
+    const updatedProduct = await ProductService.modifyProduct(parseInt(req.params.product_id, 10), productData);
+
+    if (updatedProduct) {
+      res.status(200).json(updatedProduct);
+    } else {
+      res.status(404).json({ message: 'Producto no encontrado' });
     }
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 export const deleteProduct = async (req: Request, res: Response) => {
   try {

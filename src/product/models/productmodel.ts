@@ -5,8 +5,10 @@ export interface Product{
     size_id_fk: number;
     name: string;
     description: string;
+    url: string;
     price: string;
     total_amount: number;
+    gender: string;
     deleted: boolean;
     created_at: String;
     created_by: string;

@@ -1,13 +1,17 @@
 import { Router } from 'express';
-import { createOrder, updateOrder, deleteOrder, getOrders, getOrderById } from '../controller/OrderController';
+import { createOrder, updateOrder, deleteOrder, getOrders, getOrderById, getOrdersByUserId, getOrdersByUserIdWithProducts, updatesSell, getAllOrdersWithDetails } from '../controller/OrderController';
 import { authMiddleware } from '../../shared/middlewares/auth';
 
 const orderRoutes: Router = Router();
 
 orderRoutes.get('/', authMiddleware, getOrders);
 orderRoutes.get('/:order_id', authMiddleware,getOrderById);
-orderRoutes.post('/', authMiddleware, createOrder);
+orderRoutes.get('/user/:user_id', getOrdersByUserId);
+orderRoutes.get('/user/products/:user_id', getOrdersByUserIdWithProducts);
+orderRoutes.get('/users/details/', getAllOrdersWithDetails);
+orderRoutes.post('/', createOrder);
 orderRoutes.put('/:order_id', authMiddleware, updateOrder);
-orderRoutes.delete('/:order_id',authMiddleware, deleteOrder);
+orderRoutes.put('/sell/:order_id', updatesSell);
+orderRoutes.delete('/:order_id', deleteOrder);
 
 export default orderRoutes;

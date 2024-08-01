@@ -1,8 +1,10 @@
 import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
+import path from 'path';
 import fs from 'fs';
 import https from 'https';
+import cors from 'cors';
 
 // Importar rutas de módulos
 import userRoutes from './users/routes/UserRoutes';
@@ -29,6 +31,8 @@ const port: number = parseInt(process.env.PORT as string, 10) || 3000; // Valor 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cors());
+ 
 // Rutas de los módulos
 app.use('/api/user', userRoutes);
 app.use('/api/rol', rolsRoutes);
@@ -39,6 +43,8 @@ app.use('/api/color', colorRoutes);
 app.use('/api/size', sizeRoutes);
 app.use('/api/op', OpRoutes);
 
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Middleware para manejar rutas no encontradas
 app.use(notFoundHandler);
 
@@ -48,5 +54,20 @@ app.use(errorHandler);
 // Configuración del servidor HTTPS
 
 app.listen(port, () => {
-  console.log(`Servidor HTTPS corriendo en https://localhost:${port}`);
+  console.log(`Servidor corriendo en https://localhost:${port}`);
 });
+
+
+// server {
+//   if ($host = elrincondelostextiles.integrador.xyz) {
+//       return 301 https://$host$request_uri;
+//   } # managed by Certbot
+
+
+//       listen 80;
+
+//       server_name elrincondelostextiles.integrador.xyz;
+//   return 404; # managed by Certbot
+
+
+// }
