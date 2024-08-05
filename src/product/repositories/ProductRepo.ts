@@ -82,6 +82,7 @@ export class ProductRepository {
 
   public static async updateProduct(product_id: number, productData: Product): Promise<Product | null> {
     const query = 'UPDATE product SET category_id_fk = ?, color_id_fk = ?, size_id_fk = ?, name = ?, description = ?, url = ?, price = ?, amount = ? , gender = ?, update_at = ?, update_by = ?, deleted = ? WHERE product_id = ?';
+    console.log(productData);
     return new Promise((resolve, reject) => {
       connection.execute(query, [productData.category_id_fk, productData.color_id_fk, productData.size_id_fk, productData.name, productData.description, productData.url, productData.price, productData.total_amount, productData.gender, productData.update_at ,productData.update_by, productData.deleted, product_id], (error, result: ResultSetHeader) => {
         if (error) {
@@ -98,20 +99,64 @@ export class ProductRepository {
     });
   }
 
-  public static async deleteProduct(product_id: number): Promise<boolean> {
-    const query = 'DELETE FROM product WHERE product_id = ?';
+  public static async updateProductByName(name: string, productData: Product): Promise<Product | null> {
+    const query = 'UPDATE product SET category_id_fk = ?, color_id_fk = ?, size_id_fk = ?, name = ?, description = ?, url = ?, price = ?, amount = ? , gender = ?, update_at = ?, update_by = ?, deleted = ? WHERE name = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [product_id], (error, result: ResultSetHeader) => {
+      connection.execute(query, [productData.category_id_fk, productData.color_id_fk, productData.size_id_fk, productData.name, productData.description, productData.url, productData.price, productData.total_amount, productData.gender, productData.update_at ,productData.update_by, productData.deleted, name], (error, result: ResultSetHeader) => {
         if (error) {
           reject(error);
         } else {
           if (result.affectedRows > 0) {
-            resolve(true); // Eliminación exitosa
+            const updatedEmployee: Product = { ...productData, name: name };
+            resolve(updatedEmployee);
           } else {
-            resolve(false); // Si no se encontró el usuario a eliminar
+            resolve(null);
           }
         }
       });
+    });
+  }
+
+  public static async deleteProduct(product_id: number): Promise<boolean> {
+    const deleteOrderProductQuery = 'DELETE FROM order_product WHERE product_id = ?';
+    const deleteProductQuery = 'DELETE FROM product WHERE product_id = ?';
+
+    return new Promise((resolve, reject) => {
+        connection.beginTransaction((transactionError) => {
+            if (transactionError) {
+                return reject(transactionError);
+            }
+
+            connection.execute(deleteOrderProductQuery, [product_id], (orderProductError) => {
+                if (orderProductError) {
+                    return connection.rollback(() => {
+                        reject(orderProductError);
+                    });
+                }
+
+                connection.execute(deleteProductQuery, [product_id], (productError, result: ResultSetHeader) => {
+                    if (productError) {
+                        return connection.rollback(() => {
+                            reject(productError);
+                        });
+                    }
+
+                    connection.commit((commitError) => {
+                        if (commitError) {
+                            return connection.rollback(() => {
+                                reject(commitError);
+                            });
+                        }
+
+                        if (result.affectedRows > 0) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    });
+                });
+            });
+        });
     });
   }
 }

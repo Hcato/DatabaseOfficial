@@ -49,6 +49,14 @@ export class userService {
         }
     }
 
+    public static async getUsersByRole(rol_id_fk: number): Promise<User[]> {
+        try {
+          return await UserRepository.findUsersByRole(rol_id_fk);
+        } catch (error: any) {
+          throw new Error(`Error al obtener los usuarios: ${error.message}`);
+        }
+      }      
+
     public static async getUserById(userId: number): Promise<User | null> {
         try{
             return await UserRepository.findByUserId(userId);

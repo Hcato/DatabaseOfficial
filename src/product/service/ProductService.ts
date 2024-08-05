@@ -81,10 +81,54 @@ export class ProductService {
             if (productData.url) {
               productFinded.url = productData.url;
             }
+            if (productData.gender) {
+              productFinded.gender = productData.gender;
+            }
             productFinded.update_by = productData.update_by;
             productFinded.update_at = DateUtils.formatDate(new Date());
     
             return await ProductRepository.updateProduct(productId, productFinded);
+          } else {
+            return null;
+          }
+        } catch (error: any) {
+          throw new Error(`Error al modificar el producto: ${error.message}`);
+        }
+      }
+
+      public static async modifyProductByName(name: string, productData: Product): Promise<Product | null> {
+        try {
+          const productFinded = await ProductRepository.findByProductName(name);
+    
+          if (productFinded) {
+            if (productData.category_id_fk) {
+              productFinded.category_id_fk = productData.category_id_fk;
+            }
+            if (productData.color_id_fk) {
+              productFinded.color_id_fk = productData.color_id_fk;
+            }
+            if (productData.size_id_fk) {
+              productFinded.size_id_fk = productData.size_id_fk;
+            }
+            if (productData.name) {
+              productFinded.name = productData.name;
+            }
+            if (productData.description) {
+              productFinded.description = productData.description;
+            }
+            if (productData.price) {
+              productFinded.price = productData.price;
+            }
+            if (productData.total_amount) {
+              productFinded.total_amount = productData.total_amount;
+            }
+            if (productData.url) {
+              productFinded.url = productData.url;
+            }
+            productFinded.update_by = productData.update_by;
+            productFinded.update_at = DateUtils.formatDate(new Date());
+    
+            return await ProductRepository.updateProductByName(name, productFinded);
           } else {
             return null;
           }

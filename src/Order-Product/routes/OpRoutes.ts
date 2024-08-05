@@ -8,6 +8,6 @@ OpRoutes.get('/', authMiddleware, getOp);
 OpRoutes.get('/:rol_id', authMiddleware,getOpById);
 OpRoutes.post('/', authMiddleware, createOp);
 OpRoutes.put('/:rol_id', authMiddleware, updateOp);
-OpRoutes.delete('/:rol_id',authMiddleware, deleteOp);
+OpRoutes.delete('/:rol_id', deleteOp);
 
 export default OpRoutes;

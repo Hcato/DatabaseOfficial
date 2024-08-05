@@ -31,6 +31,20 @@ export const getUsers= async (_req: Request, res: Response) => {
   }
 };
 
+export const getUsersByRole = async (req: Request, res: Response) => {
+  try {
+    const { rol_id_fk } = req.params;
+    const users = await userService.getUsersByRole(Number(rol_id_fk));
+    if (users) {
+      res.status(200).json(users);
+    } else {
+      res.status(404).json({ message: 'Sin registros' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const user = await userService.getUserById(parseInt(req.params.user_id, 10));

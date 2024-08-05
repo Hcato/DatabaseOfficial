@@ -27,6 +27,19 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
+export const getProductByName = async (req: Request, res: Response) => {
+  try {
+    const rol = await ProductService.getProductByName(req.params.name);
+    if(rol){
+      res.status(201).json(rol);
+    }else{
+      res.status(404).json({ message: 'No se encontró el producto' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getProductBycategory = async (req: Request, res: Response) => {
   try {
     const products = await ProductService.getProductBycategory(parseInt(req.params.category_id_fk, 10));
@@ -87,6 +100,33 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const productData = { ...req.body, url: imageUrl, update_at: new Date() };
     const updatedProduct = await ProductService.modifyProduct(parseInt(req.params.product_id, 10), productData);
+
+    if (updatedProduct) {
+      res.status(200).json(updatedProduct);
+    } else {
+      res.status(404).json({ message: 'Producto no encontrado' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateProductByName = async (req: Request, res: Response) => {
+  try {
+    let imageUrl: string | undefined;
+
+    if (req.body.imageUrl) {
+      // Caso de imagen externa
+      imageUrl = req.body.imageUrl;
+    } else if (req.file) {
+      // Caso de imagen cargada
+      const urlProject = process.env.URL;
+      const portProject = process.env.PORT;
+      imageUrl = `${urlProject}:${portProject}/uploads/${req.file.filename}`;
+    }
+
+    const productData = { ...req.body, url: imageUrl, update_at: new Date() };
+    const updatedProduct = await ProductService.modifyProductByName(req.params.name, productData);
 
     if (updatedProduct) {
       res.status(200).json(updatedProduct);

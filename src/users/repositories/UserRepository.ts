@@ -17,6 +17,23 @@ export class UserRepository {
     });
   }
 
+  public static async findUsersByRole(rol_id_fk: number): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT user_id, rol_id_fk, first_name, last_name, email FROM users WHERE rol_id_fk = ?',
+        [rol_id_fk],
+        (error: any, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            const users: User[] = results as User[];
+            resolve(users);
+          }
+        }
+      );
+    });
+  }  
+
   public static async findByUserId(user_id: number): Promise<User | null> {
     return new Promise((resolve, reject) => {
       connection.query('SELECT * FROM users WHERE user_id = ?', [user_id], (error: any, results) => {
@@ -88,20 +105,50 @@ export class UserRepository {
   }
 
   public static async deleteUser(user_id: number): Promise<boolean> {
-    const query = 'DELETE FROM users WHERE user_id = ?';
     return new Promise((resolve, reject) => {
-      connection.execute(query, [user_id], (error, result: ResultSetHeader) => {
-        if (error) {
-          reject(error);
-        } else {
-          if (result.affectedRows > 0) {
-            resolve(true); // Eliminación exitosa
-          } else {
-            resolve(false); // Si no se encontró el usuario a eliminar
-          }
+      connection.beginTransaction((err) => {
+        if (err) {
+          return reject(err);
         }
+  
+        const deleteOrderProductsQuery = 'DELETE FROM order_product WHERE order_id IN (SELECT order_id FROM `order` WHERE user_id_fk = ?)';
+        connection.query(deleteOrderProductsQuery, [user_id], (error) => {
+          if (error) {
+            return connection.rollback(() => reject(error));
+          }
+  
+          // Elimina las órdenes asociadas al usuario
+          const deleteOrdersQuery = 'DELETE FROM `order` WHERE user_id_fk = ?';
+          connection.query(deleteOrdersQuery, [user_id], (error) => {
+            if (error) {
+              return connection.rollback(() => reject(error));
+            }
+  
+            // Elimina el usuario
+            const deleteUserQuery = 'DELETE FROM users WHERE user_id = ?';
+            connection.query(deleteUserQuery, [user_id], (error, result: ResultSetHeader) => {
+              if (error) {
+                return connection.rollback(() => reject(error));
+              }
+  
+              connection.commit((err) => {
+                if (err) {
+                  return connection.rollback(() => reject(err));
+                }
+  
+                // Si se eliminaron filas, resolvemos con true
+                if (result.affectedRows > 0) {
+                  resolve(true); // Eliminación exitosa
+                } else {
+                  resolve(false); // Si no se encontró el usuario a eliminar
+                }
+              });
+            });
+          });
+        });
       });
     });
   }
+  
 
 }
